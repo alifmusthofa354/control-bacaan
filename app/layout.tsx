@@ -14,7 +14,7 @@ import "./globals.css";
 // });
 
 export const metadata: Metadata = {
-  title: "Control Bacaan Next App",
+  title: "Control Bacaan",
   description: "Control bacaan Alquran murid anda setiap hari.",
 };
 
