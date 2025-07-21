@@ -18,7 +18,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        Loading...
+        Sedang memuat...
       </div>
     );
   }
