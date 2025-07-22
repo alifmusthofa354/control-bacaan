@@ -15,13 +15,13 @@ export default function DashboardPage() {
     }
   }, [isLoading, isAuthenticated, router]);
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        Sedang memuat...
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex min-h-screen items-center justify-center">
+  //       Sedang memuat...
+  //     </div>
+  //   );
+  // }
 
   // seharusnya ini tidak pernah terjadi
   if (!isAuthenticated) {
