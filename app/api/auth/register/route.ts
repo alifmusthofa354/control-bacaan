@@ -7,12 +7,12 @@ import { generateToken } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password } = await request.json(); // Menggunakan 'username' dan 'password' sesuai frontend Anda
+    const { username, password, name } = await request.json(); // Menggunakan 'username', 'password', dan 'name' sesuai frontend Anda
 
     // --- Validasi Input ---
-    if (!username || !password) {
+    if (!username || !password || !name) {
       return NextResponse.json(
-        { message: "Username and password are required" },
+        { message: "Username, password, and name are required" },
         { status: 400 }
       );
     }
@@ -69,6 +69,7 @@ export async function POST(request: NextRequest) {
       .insert({
         email: username, // Simpan 'username' sebagai 'email' di DB
         password: hashedPassword, // Simpan password (atau hashed password)
+        name: name, // Tambahkan kolom nama
         // Tambahkan kolom lain yang relevan seperti 'created_at', 'role', dll.
       })
       .select("id,email") // Ambil kembali email user yang baru dibuat

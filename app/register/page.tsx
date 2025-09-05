@@ -10,6 +10,7 @@ export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth(); // Ambil fungsi login dari AuthProvider
 
@@ -30,7 +31,7 @@ export default function RegisterPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, name }),
       });
 
       if (res.ok) {
@@ -65,6 +66,23 @@ export default function RegisterPage() {
         </h2>
 
         <form onSubmit={handleRegister}>
+          <div className="mb-4">
+            <label
+              htmlFor="name"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Nama Lengkap
+            </label>
+            <input
+              type="text"
+              id="name"
+              className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
           <div className="mb-4">
             <label
               htmlFor="username"
