@@ -158,7 +158,8 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
             <button
               type="button"
               onClick={() => handleChange({ target: { name: "awalayat", value: (parseInt(formData.awalayat || "0") + 1).toString() } } as React.ChangeEvent<HTMLInputElement>)}
-              className="px-3 py-2 border border-gray-300 rounded-r-lg bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              disabled={selectedAwalSurat && parseInt(formData.awalayat || "0") >= selectedAwalSurat.ayat}
+              className="px-3 py-2 border border-gray-300 rounded-r-lg bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <PlusIcon className="w-4 h-4 text-gray-600" />
             </button>
@@ -215,7 +216,8 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
             <button
               type="button"
               onClick={() => handleChange({ target: { name: "akhirayat", value: (parseInt(formData.akhirayat || "0") + 1).toString() } } as React.ChangeEvent<HTMLInputElement>)}
-              className="px-3 py-2 border border-gray-300 rounded-r-lg bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              disabled={selectedAkhirSurat && parseInt(formData.akhirayat || "0") >= selectedAkhirSurat.ayat}
+              className="px-3 py-2 border border-gray-300 rounded-r-lg bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <PlusIcon className="w-4 h-4 text-gray-600" />
             </button>
