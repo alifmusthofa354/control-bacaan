@@ -70,7 +70,7 @@ export default function RegisterPage() {
               htmlFor="username"
               className="mb-2 block text-sm font-medium text-gray-700"
             >
-              Username / Email
+              Email
             </label>
             <input
               type="text"
