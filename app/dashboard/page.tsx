@@ -1,69 +1,83 @@
-// app/dashboard/page.tsx
 "use client";
 
 import { useEffect } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
-export default function DashboardPage() {
-  const { isAuthenticated, user, logout, isLoading } = useAuth();
+import { fetchProtectedBacaan, BacaanData } from "@/actions/bacaan";
+import Header from "@/components/customs/Header";
+import BacaanCard from "@/components/customs/BacaanCard";
+import BacaanForm from "@/components/customs/BacaanForm";
+import ErrorCard from "@/components/customs/ErrorCard";
+
+export default function Page() {
+  const { isAuthenticated, user, logout, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
 
+  const {
+    data: protectedData,
+    isLoading: isDataLoading,
+    isError: isDataError,
+    error: dataError,
+    refetch,
+  } = useQuery<BacaanData | null>({
+    queryKey: ["protectedBacaan", user?.id],
+    queryFn: fetchProtectedBacaan,
+    enabled: isAuthenticated,
+    staleTime: 5 * 60 * 1000,
+  });
+
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isAuthLoading && !isAuthenticated) {
       router.push("/login");
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isAuthLoading, isAuthenticated, router]);
 
-  if (isLoading) {
+  if (isAuthLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        Sedang memuat...
+      <div className="flex min-h-screen items-center justify-center bg-gray-100">
+        <p className="text-gray-600 font-semibold">
+          Sedang memuat autentikasi...
+        </p>
       </div>
     );
   }
 
-  // seharusnya ini tidak pernah terjadi
   if (!isAuthenticated) {
-    return null; // Atau redirect ke halaman loading/error
+    return null;
   }
 
-  const fetchProtectedData = async () => {
-    try {
-      const res = await fetch("/api/auth/user"); // Ini akan menggunakan cookie secara otomatis
-      if (res.ok) {
-        const data = await res.json();
-        alert(`Data terproteksi: ${JSON.stringify(data)}`);
-      } else {
-        const errorData = await res.json();
-        alert(`Gagal mengambil data terproteksi: ${errorData.message}`);
-      }
-    } catch (error) {
-      console.error("Error fetching protected data:", error);
-      alert("Terjadi kesalahan saat mengambil data terproteksi.");
-    }
-  };
-
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
-      <h1 className="mb-6 text-3xl font-bold">
-        Welcome to your Dashboard, {user?.username}!
-      </h1>
-      <p className="mb-8 text-lg text-gray-700">This is a protected page.</p>
+    <div className="flex min-h-screen flex-col bg-gray-100">
+      <Header userEmail={user?.username || ""} onLogout={logout} />
 
-      <button
-        onClick={fetchProtectedData}
-        className="mb-4 rounded-md bg-green-600 px-6 py-3 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-      >
-        Fetch Protected Data
-      </button>
+      <main className="flex-grow flex flex-col items-center justify-center p-4">
+        {isDataLoading && (
+          <div className="w-full max-w-2xl bg-white p-6 rounded-xl shadow-lg text-center text-gray-600">
+            <p>Sedang memuat data terproteksi...</p>
+          </div>
+        )}
 
-      <button
-        onClick={logout}
-        className="rounded-md bg-red-600 px-6 py-3 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-      >
-        Logout
-      </button>
+        {isDataError && (
+          <ErrorCard
+            errorMessage={
+              dataError instanceof Error
+                ? dataError.message
+                : "Terjadi kesalahan."
+            }
+            onRetry={refetch}
+          />
+        )}
+
+        <div className="w-full h-[80vh] flex items-center justify-center">
+          {protectedData ? (
+            <BacaanCard bacaan={protectedData} refetch={refetch} />
+          ) : (
+            <BacaanForm refetch={refetch} />
+          )}
+        </div>
+      </main>
     </div>
   );
 }

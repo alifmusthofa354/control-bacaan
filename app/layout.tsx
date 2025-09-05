@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/AuthProvider";
+import QueryProvider from "@/components/QueryProvider";
+import { Toaster } from "react-hot-toast"; // Import Toaster
 import "./globals.css";
 
 // const geistSans = Geist({
@@ -26,7 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-100 dark:bg-blue-900 text-blue-600">
-        <AuthProvider>{children}</AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

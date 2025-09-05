@@ -6,9 +6,11 @@ import {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -27,95 +29,69 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    // Di sini Anda bisa mencoba memverifikasi token saat aplikasi dimuat
-    // Misalnya, panggil API /api/auth/user untuk memvalidasi token yang ada di cookie
-    const checkAuthStatus = async () => {
-      try {
-        const res = await fetch("/api/auth/user");
-        if (res.ok) {
-          const data = await res.json();
-          setIsAuthenticated(true);
-          setUser(data.user);
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-          // Hapus cookie jika tidak valid
-          Cookies.remove("auth_token"); // Pastikan nama cookie sesuai
-        }
-      } catch (error) {
-        console.error("Error checking auth status:", error);
+  const checkAuthStatus = useCallback(async () => {
+    try {
+      const res = await fetch("/api/auth/user");
+      if (res.ok) {
+        const data = await res.json();
+        setIsAuthenticated(true);
+        setUser(data.user);
+      } else {
         setIsAuthenticated(false);
         setUser(null);
-      } finally {
-        setIsLoading(false);
+        Cookies.remove("auth_token");
       }
-    };
-    checkAuthStatus();
+    } catch (error) {
+      console.error("Error checking auth status:", error);
+      setIsAuthenticated(false);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const login = () => {
-    setIsAuthenticated(true);
-    // Setelah login berhasil, Anda mungkin perlu mengambil detail user lagi
-    // Atau bisa langsung set user jika API login mengembalikan data user
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/user");
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user after login:", error);
-      }
-    };
-    fetchUser();
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
+
+  const login = async () => {
+    // Asumsi token sudah disimpan di cookie oleh API login
+    await checkAuthStatus();
     router.push("/dashboard");
   };
 
-  const logout = () => {
-    // Hapus token dari localStorage
-    // localStorage.removeItem('auth_token');
-    const userLogout = async () => {
-      // <-- Fungsi logout harus async
-      try {
-        const res = await fetch("/api/auth/logout", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // credentials: 'include', // Tambahkan ini jika server membutuhkan kredensial
-        });
+  const logout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-        if (res.ok) {
-          // Server berhasil menghapus HttpOnly cookie
-          // Sekarang update state di sisi klien dan navigasi
-          setIsAuthenticated(false);
-          setUser(null);
-          router.push("/login");
-        } else {
-          // Jika server mengembalikan respons error
-          const errorData = await res.json();
-          console.error(
-            "Gagal logout dari server:",
-            errorData.message || "Unknown error"
-          );
-          // Tampilkan pesan error ke pengguna jika perlu
-        }
-      } catch (error) {
-        // Tangani error jaringan atau lainnya yang mencegah permintaan terkirim
+      if (res.ok) {
+        // Hapus cache React Query setelah server mengonfirmasi logout berhasil
+        queryClient.removeQueries(); // Membersihkan seluruh cache query
+      } else {
+        const errorData = await res.json();
         console.error(
-          "Terjadi kesalahan saat mengirim permintaan logout:",
-          error
+          "Gagal logout dari server:",
+          errorData.message || "Unknown error"
         );
-        // Tampilkan pesan error ke pengguna jika perlu
       }
-    };
-    userLogout();
-    setIsAuthenticated(false);
-    setUser(null);
-    router.push("/login");
+    } catch (error) {
+      console.error(
+        "Terjadi kesalahan saat mengirim permintaan logout:",
+        error
+      );
+    } finally {
+      // Selalu update state di sisi klien dan navigasi, terlepas dari hasil server
+      setIsAuthenticated(false);
+      setUser(null);
+      router.push("/login");
+    }
   };
 
   return (

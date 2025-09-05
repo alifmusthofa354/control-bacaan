@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -91,6 +92,15 @@ export default function LoginPage() {
             Login
           </button>
         </form>
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Belum punya akun?{" "}
+          <Link
+            href="/register"
+            className="font-medium text-blue-600 hover:underline"
+          >
+            Daftar di sini
+          </Link>
+        </p>
       </div>
     </div>
   );
