@@ -89,7 +89,7 @@ export default function AdminPage({
   const unwrappedParams = use(params);
   const userId = unwrappedParams.id;
   const [page, setPage] = useState(1);
-  const limit = 5;
+  const limit = 100;
   const tableRef = useRef<HTMLTableElement>(null);
 
   const { data, isLoading, isError, error } = useQuery<
