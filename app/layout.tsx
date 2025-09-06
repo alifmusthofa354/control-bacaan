@@ -1,9 +1,12 @@
-import type { Metadata } from "next";
+"use client";
+
+// import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/AuthProvider";
 import QueryProvider from "@/components/QueryProvider";
 import { Toaster } from "react-hot-toast"; // Import Toaster
 import "./globals.css";
+import { usePathname } from "next/navigation";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -15,16 +18,20 @@ import "./globals.css";
 //   subsets: ["latin"],
 // });
 
-export const metadata: Metadata = {
-  title: "Control Bacaan",
-  description: "Control bacaan Alquran murid anda setiap hari.",
-};
+// export const metadata: Metadata = {
+//   title: "Control Bacaan",
+//   description: "Control bacaan Alquran murid anda setiap hari.",
+// };
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const route = ["/adminkita", "/adminkami", "adminkamu/"];
+  const isAdminRoute = route.some((r) => pathname.startsWith(r));
+
   return (
     <html lang="en">
       <head>
@@ -32,10 +39,17 @@ export default function RootLayout({
       </head>
       <body className="bg-gray-100 dark:bg-blue-900 text-blue-600">
         <QueryProvider>
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
+          {isAdminRoute ? (
+            <>
+              {children}
+              <Toaster />
+            </>
+          ) : (
+            <AuthProvider>
+              {children}
+              <Toaster />
+            </AuthProvider>
+          )}
         </QueryProvider>
       </body>
     </html>
