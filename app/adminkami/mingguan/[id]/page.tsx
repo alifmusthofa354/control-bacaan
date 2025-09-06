@@ -3,8 +3,8 @@
 
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { useRef, useState } from "react";
-import { fetchAllBacaan } from "@/actions/adminkamiid";
+import { useRef } from "react";
+import { fetchAllBacaan } from "@/actions/adminkamimingguan";
 import { quranData } from "@/lib/quran-data";
 import { use } from "react";
 import html2canvas from "html2canvas";
@@ -48,37 +48,6 @@ const getSurahName = (surahNumber: number) => {
   return surah ? surah.surat : `Surat ${surahNumber}`;
 };
 
-// Fungsi untuk membuat array nomor halaman, termasuk "..." jika perlu
-const generatePaginationNumbers = (currentPage: number, totalPages: number) => {
-  const maxPagesToShow = 5;
-  const pages: (number | string)[] = [];
-
-  if (totalPages <= maxPagesToShow) {
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(i);
-    }
-  } else {
-    pages.push(1);
-    const start = Math.max(2, currentPage - 1);
-    const end = Math.min(totalPages - 1, currentPage + 1);
-
-    if (start > 2) {
-      pages.push("...");
-    }
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-
-    if (end < totalPages - 1) {
-      pages.push("...");
-    }
-    pages.push(totalPages);
-  }
-
-  return pages;
-};
-
 export default function AdminPage({
   params,
 }: {
@@ -88,35 +57,25 @@ export default function AdminPage({
   const name = searchParams.get("name");
   const unwrappedParams = use(params);
   const userId = unwrappedParams.id;
-  const [page, setPage] = useState(1);
-  const limit = 5;
   const tableRef = useRef<HTMLTableElement>(null);
 
   const { data, isLoading, isError, error } = useQuery<
     { data: BacaanWithUserData; count: number },
     Error
   >({
-    queryKey: ["detailpembaca", userId, page],
+    queryKey: ["detailpembacamingguan", userId],
     queryFn: async () => {
-      const result = await fetchAllBacaan(userId, page, limit);
+      const result = await fetchAllBacaan(userId);
       return result;
     },
     placeholderData: (previousData) => previousData,
   });
 
-  const handleNextPage = () => {
-    setPage((prev) => prev + 1);
-  };
-
-  const handlePrevPage = () => {
-    setPage((prev) => Math.max(1, prev - 1));
-  };
-
   const handleDownloadImage = () => {
     if (tableRef.current) {
       html2canvas(tableRef.current).then((canvas) => {
         const link = document.createElement("a");
-        link.download = `bacaan-${
+        link.download = `laporan-bacaan-${
           displayData[0]?.users?.name || name || "data"
         }.png`;
         link.href = canvas.toDataURL("image/png");
@@ -126,8 +85,6 @@ export default function AdminPage({
   };
 
   const displayData = data?.data || [];
-  const totalCount = data?.count || 0;
-  const totalPages = Math.ceil(totalCount / limit);
 
   if (isLoading) {
     return (
@@ -227,36 +184,8 @@ export default function AdminPage({
         </div>
       </div>
 
-      <div className="flex justify-center mt-8 space-x-4">
-        <button
-          onClick={handlePrevPage}
-          disabled={page === 1}
-          className="px-4 py-2 border rounded-md disabled:opacity-50"
-        >
-          &larr;
-        </button>
-        {generatePaginationNumbers(page, totalPages).map((p, index) => (
-          <button
-            key={index}
-            onClick={() => typeof p === "number" && setPage(p)}
-            className={`px-4 py-2 border rounded-md ${
-              p === page ? "bg-blue-500 text-white" : "bg-white text-gray-700"
-            } ${typeof p !== "number" ? "cursor-default" : ""}`}
-            disabled={typeof p !== "number"}
-          >
-            {p}
-          </button>
-        ))}
-        <button
-          onClick={handleNextPage}
-          disabled={page === totalPages}
-          className="px-4 py-2 border rounded-md disabled:opacity-50"
-        >
-          &rarr;
-        </button>
-      </div>
       {/* Tombol dengan posisi fixed di sisi kanan bawah */}
-      <div className="fixed bottom-8 right-8 z-10">
+      <div className="fixed bottom-3 right-8 z-10">
         <button
           onClick={handleDownloadImage}
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors shadow-lg"

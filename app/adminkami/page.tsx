@@ -124,7 +124,22 @@ export default function AdminPage() {
                       {item.email}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Link href={`/adminkami/${item.id}`}>Detail</Link>
+                      <div className="flex space-x-6">
+                        <Link
+                          href={`/adminkami/${
+                            item.id
+                          }?name=${encodeURIComponent(item.name)}`}
+                        >
+                          All
+                        </Link>
+                        <Link
+                          href={`/adminkami/mingguan/${
+                            item.id
+                          }?name=${encodeURIComponent(item.name)}`}
+                        >
+                          Mingguan
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}
