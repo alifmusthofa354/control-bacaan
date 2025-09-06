@@ -129,6 +129,7 @@ export default function AdminPage() {
                           href={`/adminkami/${
                             item.id
                           }?name=${encodeURIComponent(item.name)}`}
+                          className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium transition-colors duration-300 hover:bg-gray-300 hover:text-gray-900"
                         >
                           All
                         </Link>
@@ -136,6 +137,7 @@ export default function AdminPage() {
                           href={`/adminkami/mingguan/${
                             item.id
                           }?name=${encodeURIComponent(item.name)}`}
+                          className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium transition-colors duration-300 hover:bg-gray-300 hover:text-gray-900"
                         >
                           Mingguan
                         </Link>
