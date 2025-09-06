@@ -107,109 +107,136 @@ export default function AdminPage({
       <div className="container mx-auto p-8">
         <div
           ref={tableRef}
-          className=" items-center justify-center min-h-[1000px]"
+          className="flex flex-col min-h-[1000px] min-w-[1000px]" // Tambahkan flex flex-col
         >
-          <div className="flex items-center mb-6 relative">
-            {/* Kontainer untuk Gambar (di kiri) */}
-            <div>
-              <img
-                src="/logo.png"
-                alt="Logo perusahaan"
-                width={128}
-                height={128}
-                className="ml-4 mt-4"
-              />
+          {/* Kontainer untuk semua elemen di atas div "ok bos" */}
+          <div className="flex-grow">
+            <div className="flex items-center mb-6 relative">
+              <div>
+                <img
+                  src="/logo.png"
+                  alt="Logo perusahaan"
+                  width={128}
+                  height={128}
+                  className="ml-4 mt-4"
+                />
+              </div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <p className="text-4xl font-bold mb-4 text-center">
+                  السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللّٰــــــہِ
+                  وَبَرَكَاتُـــــــہُ
+                </p>
+                <h3 className="text-3xl font-bold text-center">
+                  Buku Laporan Bacaan
+                </h3>
+              </div>
             </div>
-
-            {/* Kontainer untuk Teks (diposisikan absolut di tengah) */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <p className="text-3xl font-bold mb-4 text-center">
-                السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللّٰــــــہِ
-                وَبَرَكَاتُـــــــہُ
+            <h3 className="text-2xl font-bold mb-6 ml-6">Nama : {name}</h3>
+            {displayData.length > 0 ? (
+              <div
+                className="overflow-x-auto rounded-lg shadow-md"
+                style={{ backgroundColor: "#ffffff" }}
+              >
+                <table
+                  className="min-w-full"
+                  style={{ borderCollapse: "collapse", borderColor: "#e5e7eb" }}
+                >
+                  <thead style={{ backgroundColor: "#f9fafb" }}>
+                    <tr>
+                      <th
+                        className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                        style={{ color: "#6b7280" }}
+                      >
+                        Tanggal
+                      </th>
+                      <th
+                        className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                        style={{ color: "#6b7280" }}
+                      >
+                        Awal Surat
+                      </th>
+                      <th
+                        className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                        style={{ color: "#6b7280" }}
+                      >
+                        Awal Ayat
+                      </th>
+                      <th
+                        className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                        style={{ color: "#6b7280" }}
+                      >
+                        Akhir Surat
+                      </th>
+                      <th
+                        className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                        style={{ color: "#6b7280" }}
+                      >
+                        Akhir Ayat
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    style={{
+                      backgroundColor: "#ffffff",
+                      borderTop: "1px solid #e5e7eb",
+                    }}
+                  >
+                    {displayData.map((item) => (
+                      <tr key={item.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {formatDate(item.created_at)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {getSurahName(item.awalsurat)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {item.awalayat}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {getSurahName(item.akhirsurat)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {item.akhirayat}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p
+                className="text-center text-3xl font-bold mb-6 mt-64"
+                style={{ color: "red" }}
+              >
+                Belum Menderes Surat.
               </p>
-              <h3 className="text-3xl font-bold text-center">
-                Buku Laporan Bacaan
-              </h3>
-            </div>
+            )}
           </div>
 
-          <h3 className="text-2xl font-bold mb-6 ml-6 ">Nama : {name}</h3>
-          {displayData.length > 0 ? (
-            <div
-              className="overflow-x-auto rounded-lg shadow-md"
-              style={{ backgroundColor: "#ffffff" }}
-            >
-              <table
-                className="min-w-full"
-                style={{ borderCollapse: "collapse", borderColor: "#e5e7eb" }}
-              >
-                <thead style={{ backgroundColor: "#f9fafb" }}>
-                  <tr>
-                    <th
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                      style={{ color: "#6b7280" }}
-                    >
-                      Tanggal
-                    </th>
-                    <th
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                      style={{ color: "#6b7280" }}
-                    >
-                      Awal Surat
-                    </th>
-                    <th
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                      style={{ color: "#6b7280" }}
-                    >
-                      Awal Ayat
-                    </th>
-                    <th
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                      style={{ color: "#6b7280" }}
-                    >
-                      Akhir Surat
-                    </th>
-                    <th
-                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                      style={{ color: "#6b7280" }}
-                    >
-                      Akhir Ayat
-                    </th>
-                  </tr>
-                </thead>
-                <tbody
-                  style={{
-                    backgroundColor: "#ffffff",
-                    borderTop: "1px solid #e5e7eb",
-                  }}
-                >
-                  {displayData.map((item) => (
-                    <tr key={item.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {formatDate(item.created_at)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {getSurahName(item.awalsurat)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {item.awalayat}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {getSurahName(item.akhirsurat)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {item.akhirayat}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className=" text-center text-3xl font-bold mb-6 mt-6">
-              Belum Menderes Surat.
-            </p>
-          )}
+          {/* Div ini akan selalu berada di bawah */}
+          <div className="mt-auto pb-28 text-center text-2xl font-bold">
+            {displayData.length > 5 ? (
+              <p>
+                Sudah semangat dalam membaca alquran. Kami dari pjp kelompok
+                mensyukuri
+              </p>
+            ) : displayData.length > 3 ? (
+              <p>
+                Sudah bagus, namun Amalsholih lebih ditingkatkan lagi untuk
+                membaca alquran
+              </p>
+            ) : displayData.length > 1 ? (
+              <p>Amalsholih lebih ditingkatkan lagi untuk membaca alquran</p>
+            ) : (
+              <p>
+                Amalsholih untuk di ingatkan untuk membaca alquran minimal 3
+                ayat sehari.
+              </p>
+            )}
+            <h3 className="my-6 text-4xl">
+              الحمد للّٰــہ جزاكـم اللّٰــہ خيرا
+            </h3>
+          </div>
         </div>
       </div>
 

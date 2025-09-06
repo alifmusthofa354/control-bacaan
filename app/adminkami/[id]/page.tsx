@@ -148,7 +148,10 @@ export default function AdminPage({
   return (
     <div className="bg-white min-h-screen">
       <div className="container mx-auto p-8">
-        <div ref={tableRef} className=" items-center justify-center min-h-96">
+        <div
+          ref={tableRef}
+          className=" items-center justify-center min-h-[100px] min-w-[1000px]"
+        >
           <div className="flex items-center mb-6 relative">
             {/* Kontainer untuk Gambar (di kiri) */}
             <div>
