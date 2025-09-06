@@ -131,7 +131,7 @@ export default function AdminPage({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-white min-h-screen">
         <p>🔄 Sedang memuat data...</p>
       </div>
     );
@@ -139,17 +139,41 @@ export default function AdminPage({
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center h-screen text-red-500">
+      <div className="flex items-center justify-center h-screen text-red-500 bg-white min-h-screen">
         <p>❌ Terjadi kesalahan: {error.message}</p>
       </div>
     );
   }
 
   return (
-    <>
+    <div className="bg-white min-h-screen">
       <div className="container mx-auto p-8">
         <div ref={tableRef} className=" items-center justify-center min-h-96">
-          <h3 className="text-3xl font-bold mb-6 ml-6 text-center">{name}</h3>
+          <div className="flex items-center mb-6 relative">
+            {/* Kontainer untuk Gambar (di kiri) */}
+            <div>
+              <img
+                src="/logo.png"
+                alt="Logo perusahaan"
+                width={128}
+                height={128}
+                className="ml-4 mt-4"
+              />
+            </div>
+
+            {/* Kontainer untuk Teks (diposisikan absolut di tengah) */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <p className="text-3xl font-bold mb-4 text-center">
+                السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللّٰــــــہِ
+                وَبَرَكَاتُـــــــہُ
+              </p>
+              <h3 className="text-3xl font-bold text-center">
+                Buku Laporan Bacaan
+              </h3>
+            </div>
+          </div>
+
+          <h3 className="text-2xl font-bold mb-6 ml-6 ">Nama : {name}</h3>
           {displayData.length > 0 ? (
             <div
               className="overflow-x-auto rounded-lg shadow-md"
@@ -222,7 +246,9 @@ export default function AdminPage({
               </table>
             </div>
           ) : (
-            <p className=" text-center">Belum Menderes Surat.</p>
+            <p className=" text-center text-3xl font-bold mb-6 mt-6">
+              Belum Menderes Surat.
+            </p>
           )}
         </div>
       </div>
@@ -264,6 +290,6 @@ export default function AdminPage({
           Unduh Gambar Tabel
         </button>
       </div>
-    </>
+    </div>
   );
 }

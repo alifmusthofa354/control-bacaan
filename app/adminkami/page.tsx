@@ -76,7 +76,7 @@ export default function AdminPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-white min-h-screen">
         <p>🔄 Sedang memuat data...</p>
       </div>
     );
@@ -84,15 +84,15 @@ export default function AdminPage() {
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center h-screen text-red-500">
+      <div className="flex items-center justify-center h-screen text-red-500 bg-white min-h-screen">
         <p>❌ Terjadi kesalahan: {error.message}</p>
       </div>
     );
   }
   console.log(displayData);
   return (
-    <>
-      <div className="container mx-auto p-8">
+    <div className="bg-white min-h-screen">
+      <div className="container mx-auto p-8 ">
         <h1 className="text-3xl font-bold mb-6">Halaman AdminKami</h1>
         {displayData.length > 0 ? (
           <div className="overflow-x-auto bg-white rounded-lg shadow-md">
@@ -179,6 +179,6 @@ export default function AdminPage() {
           &rarr;
         </button>
       </div>
-    </>
+    </div>
   );
 }
