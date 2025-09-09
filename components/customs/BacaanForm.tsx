@@ -33,13 +33,19 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
   const [awalAyatError, setAwalAyatError] = useState<string | null>(null);
   const [akhirAyatError, setAkhirAyatError] = useState<string | null>(null);
 
-  const selectedAwalSurat = quranData.find((s) => s.surat === formData.awalsurat);
-  const selectedAkhirSurat = quranData.find((s) => s.surat === formData.akhirsurat);
+  const selectedAwalSurat = quranData.find(
+    (s) => s.surat === formData.awalsurat
+  );
+  const selectedAkhirSurat = quranData.find(
+    (s) => s.surat === formData.akhirsurat
+  );
 
   useEffect(() => {
     if (selectedAwalSurat) {
       if (parseInt(formData.awalayat) > selectedAwalSurat.ayat) {
-        setAwalAyatError(`Ayat tidak boleh lebih dari ${selectedAwalSurat.ayat}`);
+        setAwalAyatError(
+          `Ayat tidak boleh lebih dari ${selectedAwalSurat.ayat}`
+        );
       } else if (parseInt(formData.awalayat) < 1) {
         setAwalAyatError("Ayat tidak boleh kurang dari 1");
       } else {
@@ -51,7 +57,9 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
   useEffect(() => {
     if (selectedAkhirSurat) {
       if (parseInt(formData.akhirayat) > selectedAkhirSurat.ayat) {
-        setAkhirAyatError(`Ayat tidak boleh lebih dari ${selectedAkhirSurat.ayat}`);
+        setAkhirAyatError(
+          `Ayat tidak boleh lebih dari ${selectedAkhirSurat.ayat}`
+        );
       } else if (parseInt(formData.akhirayat) < 1) {
         setAkhirAyatError("Ayat tidak boleh kurang dari 1");
       } else {
@@ -64,7 +72,9 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
     Cookies.set("bacaanFormData", JSON.stringify(formData), { expires: 7 });
   }, [formData]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     let newValue = value;
 
@@ -74,9 +84,17 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
     }
 
     if (name === "awalsurat") {
-      setFormData((prev) => ({ ...prev, awalsurat: newValue, akhirsurat: newValue }));
+      setFormData((prev) => ({
+        ...prev,
+        awalsurat: newValue,
+        akhirsurat: newValue,
+      }));
     } else if (name === "awalayat") {
-      setFormData((prev) => ({ ...prev, awalayat: newValue, akhirayat: newValue }));
+      setFormData((prev) => ({
+        ...prev,
+        awalayat: newValue,
+        akhirayat: newValue,
+      }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: newValue }));
     }
@@ -92,8 +110,12 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!awalAyatError && !akhirAyatError) {
-      const awalSuratNomor = quranData.find((s) => s.surat === formData.awalsurat)?.nomor;
-      const akhirSuratNomor = quranData.find((s) => s.surat === formData.akhirsurat)?.nomor;
+      const awalSuratNomor = quranData.find(
+        (s) => s.surat === formData.awalsurat
+      )?.nomor;
+      const akhirSuratNomor = quranData.find(
+        (s) => s.surat === formData.akhirsurat
+      )?.nomor;
 
       if (awalSuratNomor && akhirSuratNomor) {
         mutate({
@@ -140,7 +162,14 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
           <div className="flex items-center">
             <button
               type="button"
-              onClick={() => handleChange({ target: { name: "awalayat", value: (parseInt(formData.awalayat || "0") - 1).toString() } } as React.ChangeEvent<HTMLInputElement>)}
+              onClick={() =>
+                handleChange({
+                  target: {
+                    name: "awalayat",
+                    value: (parseInt(formData.awalayat || "0") - 1).toString(),
+                  },
+                } as React.ChangeEvent<HTMLInputElement>)
+              }
               disabled={parseInt(formData.awalayat || "0") <= 1}
               className="px-3 py-2 border border-gray-300 rounded-l-lg bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -157,14 +186,26 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
             />
             <button
               type="button"
-              onClick={() => handleChange({ target: { name: "awalayat", value: (parseInt(formData.awalayat || "0") + 1).toString() } } as React.ChangeEvent<HTMLInputElement>)}
-              disabled={selectedAwalSurat && parseInt(formData.awalayat || "0") >= selectedAwalSurat.ayat}
+              onClick={() =>
+                handleChange({
+                  target: {
+                    name: "awalayat",
+                    value: (parseInt(formData.awalayat || "0") + 1).toString(),
+                  },
+                } as React.ChangeEvent<HTMLInputElement>)
+              }
+              disabled={
+                selectedAwalSurat &&
+                parseInt(formData.awalayat || "0") >= selectedAwalSurat.ayat
+              }
               className="px-3 py-2 border border-gray-300 rounded-r-lg bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <PlusIcon className="w-4 h-4 text-gray-600" />
             </button>
           </div>
-          {awalAyatError && <p className="text-red-500 text-xs">{awalAyatError}</p>}
+          {awalAyatError && (
+            <p className="text-red-500 text-xs">{awalAyatError}</p>
+          )}
         </div>
         <div className="space-y-2">
           <label
@@ -198,7 +239,14 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
           <div className="flex items-center">
             <button
               type="button"
-              onClick={() => handleChange({ target: { name: "akhirayat", value: (parseInt(formData.akhirayat || "0") - 1).toString() } } as React.ChangeEvent<HTMLInputElement>)}
+              onClick={() =>
+                handleChange({
+                  target: {
+                    name: "akhirayat",
+                    value: (parseInt(formData.akhirayat || "0") - 1).toString(),
+                  },
+                } as React.ChangeEvent<HTMLInputElement>)
+              }
               disabled={parseInt(formData.akhirayat || "0") <= 1}
               className="px-3 py-2 border border-gray-300 rounded-l-lg bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -215,14 +263,26 @@ const BacaanForm: React.FC<BacaanFormProps> = ({ refetch }) => {
             />
             <button
               type="button"
-              onClick={() => handleChange({ target: { name: "akhirayat", value: (parseInt(formData.akhirayat || "0") + 1).toString() } } as React.ChangeEvent<HTMLInputElement>)}
-              disabled={selectedAkhirSurat && parseInt(formData.akhirayat || "0") >= selectedAkhirSurat.ayat}
+              onClick={() =>
+                handleChange({
+                  target: {
+                    name: "akhirayat",
+                    value: (parseInt(formData.akhirayat || "0") + 1).toString(),
+                  },
+                } as React.ChangeEvent<HTMLInputElement>)
+              }
+              disabled={
+                selectedAkhirSurat &&
+                parseInt(formData.akhirayat || "0") >= selectedAkhirSurat.ayat
+              }
               className="px-3 py-2 border border-gray-300 rounded-r-lg bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <PlusIcon className="w-4 h-4 text-gray-600" />
             </button>
           </div>
-          {akhirAyatError && <p className="text-red-500 text-xs">{akhirAyatError}</p>}
+          {akhirAyatError && (
+            <p className="text-red-500 text-xs">{akhirAyatError}</p>
+          )}
         </div>
         <button
           type="submit"
@@ -282,4 +342,3 @@ function MinusIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-

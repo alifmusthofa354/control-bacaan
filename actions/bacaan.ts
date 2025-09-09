@@ -42,7 +42,7 @@ export async function fetchProtectedBacaan(): Promise<BacaanData | null> {
 
 // Fungsi untuk membuat data bacaan baru
 export async function createBacaan(
-  data: Omit<BacaanData, "id">
+  data: Omit<BacaanData, "id" | "created_at" | "iduser">
 ): Promise<BacaanData> {
   try {
     const response = await apiClient.post("/api/bacaan", data);
@@ -57,7 +57,9 @@ export async function createBacaan(
 }
 
 // Fungsi untuk memperbarui data bacaan
-export async function updateBacaan(data: BacaanData): Promise<BacaanData> {
+export async function updateBacaan(
+  data: Omit<BacaanData, "id" | "created_at" | "iduser">
+): Promise<BacaanData> {
   try {
     const response = await apiClient.put("/api/bacaan", data);
     return response.data;
