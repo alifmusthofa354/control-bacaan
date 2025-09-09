@@ -142,6 +142,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     (await request.json()) as BacaanData;
 
   try {
+    let username = "";
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("name")
+      .eq("id", userId)
+      .single();
+
+    if (userError) {
+      throw new Error(userError.message);
+    }
+
+    if (userData) {
+      username = userData.name;
+    }
+
     const { data, error } = await supabase
       .from("bacaan")
       .insert([
@@ -164,7 +179,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const notificationMessage = `
       *Laporan Bacaan Baru Masuk!* 📖
 
-      👤 *User ID:* \`${userId}\`
+      👤 *User ID:* \`${username}\`
       📖 *Dari:* Surat ${awalsurat}, Ayat ${awalayat}
       🏁 *Sampai:* Surat ${akhirsurat}, Ayat ${akhirayat}
     `;
