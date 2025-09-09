@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/get-cronjoblaporan",
-      "schedule": "24 14 * * *"
+      "schedule": "30 14 * * *"
     }
   ]
 }
