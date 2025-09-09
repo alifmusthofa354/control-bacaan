@@ -50,6 +50,44 @@ const verifyAuth = async (): Promise<AuthResult> => {
   }
 };
 
+// Anda bisa letakkan ini di file yang sama atau di file terpisah (misal: lib/telegram.ts)
+
+async function sendTelegramNotification(message: string) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!botToken || !chatId) {
+    console.error("Telegram environment variables not set!");
+    return; // Keluar dari fungsi jika variabel tidak ada
+  }
+
+  const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: "Markdown", // Menggunakan Markdown untuk format teks
+      }),
+    });
+
+    const data = await response.json();
+    if (!data.ok) {
+      // Jika ada error dari Telegram, log pesannya
+      console.error("Error sending Telegram notification:", data.description);
+    } else {
+      console.log("Telegram notification sent successfully!");
+    }
+  } catch (error) {
+    console.error("Failed to send Telegram notification:", error);
+  }
+}
+
 // GET: Mengambil data bacaan untuk pengguna yang login
 export async function GET(): Promise<NextResponse> {
   const authResult = await verifyAuth();
@@ -120,6 +158,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (error) {
       throw new Error(error.message);
     }
+
+    // --- BAGIAN TAMBAHAN UNTUK NOTIFIKASI TELEGRAM ---
+    // 1. Buat pesan notifikasinya
+    const notificationMessage = `
+      *Laporan Bacaan Baru Masuk!* 📖
+
+      👤 *User ID:* \`${userId}\`
+      📖 *Dari:* Surat ${awalsurat}, Ayat ${awalayat}
+      🏁 *Sampai:* Surat ${akhirsurat}, Ayat ${akhirayat}
+    `;
+
+    // 2. Panggil fungsi untuk mengirim notifikasi (tanpa mengganggu alur utama)
+    await sendTelegramNotification(notificationMessage.trim());
+    // --------------------------------------------------
 
     return NextResponse.json(data[0], { status: 201 });
   } catch (error) {
