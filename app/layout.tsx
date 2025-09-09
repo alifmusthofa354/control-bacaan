@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const route = ["/adminkita", "/adminkami", "adminkamu/"];
+  const route = ["/adminkita", "/adminkami", "adminkamu/", "/cronjoblaporan"];
   const isAdminRoute = route.some((r) => pathname.startsWith(r));
 
   return (
