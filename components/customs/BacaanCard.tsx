@@ -34,10 +34,20 @@ const BacaanCard: React.FC<BacaanCardProps> = ({ bacaan, refetch }) => {
         />
       )}
       <div className="h-full flex flex-col items-center justify-center text-center p-6">
-        <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+        <h3 className="text-2xl font-bold text-gray-800 flex items-center">
           <BookIcon className="w-7 h-7 mr-3 text-blue-500" />
           <span>Detail Bacaan</span>
         </h3>
+
+        <h6 className="text-xl text-gray-600 mb-2">
+          {new Date(bacaan.created_at).toLocaleDateString("id-ID", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </h6>
+
         <div className="space-y-6 text-lg text-gray-600">
           <div className="flex flex-col items-center">
             <div className="flex items-center font-semibold text-gray-700 mb-1">
@@ -45,7 +55,16 @@ const BacaanCard: React.FC<BacaanCardProps> = ({ bacaan, refetch }) => {
               <span>Awal</span>
             </div>
             <span className="text-xl">
-              {quranData.find((s) => s.nomor === parseInt(bacaan.awalsurat))?.nomor}. {quranData.find((s) => s.nomor === parseInt(bacaan.awalsurat))?.surat} ({bacaan.awalayat})
+              {
+                quranData.find((s) => s.nomor === parseInt(bacaan.awalsurat))
+                  ?.nomor
+              }
+              .{" "}
+              {
+                quranData.find((s) => s.nomor === parseInt(bacaan.awalsurat))
+                  ?.surat
+              }{" "}
+              ({bacaan.awalayat})
             </span>
           </div>
           <div className="flex flex-col items-center">
@@ -54,7 +73,16 @@ const BacaanCard: React.FC<BacaanCardProps> = ({ bacaan, refetch }) => {
               <span>Akhir</span>
             </div>
             <span className="text-xl">
-              {quranData.find((s) => s.nomor === parseInt(bacaan.akhirsurat))?.nomor}. {quranData.find((s) => s.nomor === parseInt(bacaan.akhirsurat))?.surat} ({bacaan.akhirayat})
+              {
+                quranData.find((s) => s.nomor === parseInt(bacaan.akhirsurat))
+                  ?.nomor
+              }
+              .{" "}
+              {
+                quranData.find((s) => s.nomor === parseInt(bacaan.akhirsurat))
+                  ?.surat
+              }{" "}
+              ({bacaan.akhirayat})
             </span>
           </div>
         </div>

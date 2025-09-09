@@ -102,7 +102,9 @@ export async function GET(): Promise<NextResponse> {
   try {
     const { data: userData, error: userError } = await supabase
       .from("bacaan")
-      .select("id, iduser, awalsurat, awalayat, akhirsurat, akhirayat")
+      .select(
+        "id, created_at, iduser, awalsurat, awalayat, akhirsurat, akhirayat"
+      )
       .eq("iduser", userId)
       .gte("created_at", `${new Date().toISOString().split("T")[0]}T00:00:00Z`)
       .lte("created_at", `${new Date().toISOString().split("T")[0]}T23:59:59Z`);
@@ -221,6 +223,21 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
+    let username = "";
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("name")
+      .eq("id", userId)
+      .single();
+
+    if (userError) {
+      throw new Error(userError.message);
+    }
+
+    if (userData) {
+      username = userData.name;
+    }
+
     const { data, error } = await supabase
       .from("bacaan")
       .update({
@@ -243,6 +260,20 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
         { status: 404 }
       );
     }
+
+    // --- BAGIAN TAMBAHAN UNTUK NOTIFIKASI TELEGRAM ---
+    // 1. Buat pesan notifikasinya
+    const notificationMessage = `
+      *Laporan Bacaan Di Edit!* 📖
+
+      👤 *User ID:* \`${username}\`
+      📖 *Dari:* Surat ${awalsurat}, Ayat ${awalayat}
+      🏁 *Sampai:* Surat ${akhirsurat}, Ayat ${akhirayat}
+    `;
+
+    // 2. Panggil fungsi untuk mengirim notifikasi (tanpa mengganggu alur utama)
+    await sendTelegramNotification(notificationMessage.trim());
+    // --------------------------------------------------
 
     return NextResponse.json(data[0], { status: 200 });
   } catch (error) {
@@ -276,6 +307,21 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
+    let username = "";
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("name")
+      .eq("id", userId)
+      .single();
+
+    if (userError) {
+      throw new Error(userError.message);
+    }
+
+    if (userData) {
+      username = userData.name;
+    }
+
     const { data, error } = await supabase
       .from("bacaan")
       .delete()
@@ -293,6 +339,18 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
         { status: 404 }
       );
     }
+
+    // --- BAGIAN TAMBAHAN UNTUK NOTIFIKASI TELEGRAM ---
+    // 1. Buat pesan notifikasinya
+    const notificationMessage = `
+      *Laporan Bacaan Dihapus!* 📖
+
+      👤 *User ID:* \`${username}\`
+    `;
+
+    // 2. Panggil fungsi untuk mengirim notifikasi (tanpa mengganggu alur utama)
+    await sendTelegramNotification(notificationMessage.trim());
+    // --------------------------------------------------
 
     return NextResponse.json(
       { message: "Data deleted successfully" },

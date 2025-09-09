@@ -4,6 +4,8 @@ import axios from "axios";
 // Dipindahkan ke sini agar menjadi satu sumber kebenaran untuk tipe data
 export interface BacaanData {
   id: string;
+  created_at: string;
+  iduser: string;
   awalsurat: string;
   awalayat: string;
   akhirsurat: string;
