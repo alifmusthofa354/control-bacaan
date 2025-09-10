@@ -99,18 +99,6 @@ export async function GET(): Promise<NextResponse> {
   }
   const { userId } = authResult;
 
-  // Dapatkan tanggal dan waktu saat ini di zona waktu WIB
-  const now = new Date();
-  const offset = -420; // -7 jam dalam menit, karena WIB adalah UTC+7
-  const localTime = new Date(now.getTime() + offset * 60 * 1000);
-
-  // Ambil tanggal hari ini dalam format YYYY-MM-DD
-  const todayDate = localTime.toISOString().split("T")[0];
-
-  // Tentukan rentang waktu dari 00:00:00 WIB hingga 23:59:59 WIB dalam format UTC
-  const startOfDayWIB = `${todayDate}T00:00:00+07:00`;
-  const endOfDayWIB = `${todayDate}T23:59:59+07:00`;
-
   try {
     const { data: userData, error: userError } = await supabase
       .from("bacaan")
@@ -118,8 +106,8 @@ export async function GET(): Promise<NextResponse> {
         "id, created_at, iduser, awalsurat, awalayat, akhirsurat, akhirayat"
       )
       .eq("iduser", userId)
-      .gte("created_at", startOfDayWIB)
-      .lte("created_at", endOfDayWIB);
+      .gte("created_at", `${new Date().toISOString().split("T")[0]}T00:00:00Z`)
+      .lte("created_at", `${new Date().toISOString().split("T")[0]}T23:59:59Z`);
 
     if (userError) {
       throw new Error(userError.message);
